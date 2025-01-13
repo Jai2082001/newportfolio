@@ -54,7 +54,7 @@ import Freelance from './images/freelance1.png'
 import ConestogaImg from './images/conestogalog.png'
 import Mgsu from './images/mgsu.png'
 import VideoGif from './images/video1.gif'
-import Screenshot3 from './images/Screenshot2.png'
+import Screenshot3 from './images/screenshot2.png'
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Screenshot4 from './images/screenshot3.png'
 import expressjs from './images/expressjs.png'
@@ -597,48 +597,48 @@ export default function Home() {
         </CardContent>
         <Card className={'bg-gray-100'}>
           <CardTitle className={'text-center p-4'}>My Skills</CardTitle>
-          <div class="min-h-screen bg-gray-100 flex  items-center justify-center">
+          <div className="min-h-screen bg-gray-100 flex  items-center justify-center">
 
-            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
                 {/* <div  className={Classes.glowingimage}> */}
-                <Image className={Classes.glowingimage} src={expressjs}></Image>
+                <Image alt="icone" className={Classes.glowingimage} src={expressjs}></Image>
                 {/* </div> */}
               </div>
 
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={Classes.glowingimage} src={nextjsRemove}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={Classes.glowingimage} src={nextjsRemove}></Image>
               </div>
 
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={`${Classes.glowingimage} p-3`} src={mongodb}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={`${Classes.glowingimage} p-3`} src={mongodb}></Image>
               </div>
 
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={`${Classes.glowingimage} p-3`} src={postgresql}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={`${Classes.glowingimage} p-3`} src={postgresql}></Image>
               </div>
 
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={Classes.glowingimage} src={kafka}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={Classes.glowingimage} src={kafka}></Image>
               </div>
 
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={Classes.glowingimage} src={kubernetes}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={Classes.glowingimage} src={kubernetes}></Image>
               </div>
 
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={Classes.glowingimage} src={reactlogo}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={Classes.glowingimage} src={reactlogo}></Image>
               </div>
 
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={Classes.glowingimage} src={tailwind}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={Classes.glowingimage} src={tailwind}></Image>
               </div>
 
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={Classes.glowingimage} src={aws}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={Classes.glowingimage} src={aws}></Image>
               </div>
-              <div class="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
-                <Image className={Classes.glowingimage} src={github}></Image>
+              <div className="flex m-5 justify-center items-center p-4 bg-white rounded-lg shadow-md">
+                <Image alt="icone" className={Classes.glowingimage} src={github}></Image>
               </div>
 
             </div>
@@ -649,11 +649,11 @@ export default function Home() {
         <Card className={'p-6 pb-32 text-center'}>
           <CardTitle className={'p-5'}>Additional Certifications</CardTitle>
           <Card className={'mt-5 p-5 flex items-center md:flex-row flex-col'}>
-            <Image className={Classes.imageFixing} src={badge}></Image>
+            <Image alt="icon" className={Classes.imageFixing} src={badge}></Image>
             <p className="p-5">The Solutions Architect certification equips professionals with the knowledge and skills to design, implement, and manage secure, scalable, and cost-efficient cloud-based solutions. It focuses on core architectural principles, including system reliability, performance optimization, and security best practices. This certification validates expertise in cloud services, networking, storage, and databases, making it ideal for individuals aiming to create innovative and efficient solutions tailored to business needs.</p>
           </Card>
           <Card className={'mt-5 p-5 flex items-center md:flex-row flex-col'}>
-            <Image className={Classes.imageFixing} src={googlebadge}></Image>
+            <Image alt="icon" className={Classes.imageFixing} src={googlebadge}></Image>
             <p className="p-5">The Google Cloud Design, Implement, and Manage Certificate is a professional certification aimed at equipping individuals with the skills to design scalable and secure cloud solutions. It covers principles of cloud architecture, best practices for infrastructure implementation, and effective resource management. This certificate is ideal for professionals or intermediates looking to enhance their expertise in cloud design, security, and operational management.</p>
           </Card>
         </Card>
