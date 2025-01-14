@@ -663,7 +663,7 @@ export default function Home() {
             <div className={Classes.hero}>
             </div>
             <div className={Classes.content}>
-              <h1 className={Classes.h1ScalingSize} data-text='An awesome title'>Lets Connect</h1>
+              <h1 className={`${Classes.h1ScalingSize} text-5xl`}>Lets Connect</h1>
               <div className="flex gap-8">
                 <Button variant='outline' onClick={emailHandler}>Email</Button>
                 <Button onClick={calendlyHandler} variant='outline'>Book an Appointment</Button>
