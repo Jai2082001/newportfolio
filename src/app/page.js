@@ -119,7 +119,7 @@ export default function Home() {
 
           <div className="flex flex-wrap items-center justify-center gap-8">
             <div className="w-full sm:w-1/2 lg:w-1/3 flex" style={{ justifyContent: 'center' }}>
-              <Image alt="Screenshot2" className="rounded-full w-9/12	" src={Profile}></Image>
+              <Image alt="Screenshot2" className="rounded-full w-1/2	" src={Profile}></Image>
               {/* <img src={DesignerImage}
                 alt="Sample Image"
                 className="w-full rounded-lg shadow-lg" /> */}
