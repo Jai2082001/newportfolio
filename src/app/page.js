@@ -41,6 +41,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { Progress } from "@/components/ui/progress";;
 
 import Screenshot2 from './images/image.png'
 import DesignerImage from './images/Designer.png'
@@ -71,13 +72,19 @@ import aws from './images/aws.png'
 import badge from './images/badge.png'
 import googlebadge from './images/googlebadge.png'
 import github from './images/github.png'
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { HttpRequest } from "@aws-sdk/protocol-http";
+import crypto from 'crypto';
+import { useEffect } from "react";
 
 export default function Home() {
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerOpen1, setDrawerOpen1] = useState(false);
-  const [drawerOpen2, setDrawerOpen2] = useState(false);
-  const [drawerOpen3, setDrawerOpen3] = useState(false);
+  const [turnBackend, checkTurnOnBackend] = useState(false);
+  const [showProjects, altShowProjects] = useState(false);
+  const [loader, showLoader] = useState(false);
+
+
+
 
   const emailHandler = () => {
     window.location = 'mailto:jaideepgrover147@gmail.com'
@@ -85,6 +92,27 @@ export default function Home() {
   const calendlyHandler = () => {
     window.location = 'https://tinyurl.com/JaideepMeeting'
   }
+
+
+  useEffect(() => {
+    fetch('/api/checkStatus').then((response) => {
+      return response.json()
+    }).then((response) => {
+      if (response && response.status == 'running') {
+        altShowProjects(true)
+      }
+    })
+  }, [])
+  const turningBackendsUp = async () => {
+    // aws function;
+    showLoader(13);
+    await fetch('/api/start-backend');
+    showLoader(88);
+    altShowProjects(true);
+
+  }
+
+  console.log(showProjects)
 
   return (
     <>
@@ -98,7 +126,7 @@ export default function Home() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
 
-          
+
         </MenubarMenu>
       </Menubar>
 
@@ -142,280 +170,306 @@ export default function Home() {
             Projects
           </CardTitle>
         </CardHeader>
-        <Card>
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8">
-            {/* <img
+        {!showProjects &&
+          <>
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8" style={{ justifyContent: 'center' }}>
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button>See the Projects </Button>
+                </DrawerTrigger>
+                <DrawerContent className={'p-20 text-center'}>
+                  <div>
+                    <p className="m-5">Important Information</p>
+                    <Separator></Separator>
+                    {!loader && <p>The backends for all the projects have been turned down for cost saving purpose, if you want to see them turn on the magic button and wait for the backends to be up</p>}
+                    {loader && <p>Working on it</p>}
+                    {!loader && <Button onClick={() => { turningBackendsUp() }} className="m-5">Turn the Backends Up</Button>}
+                    {loader && <Progress value={loader}></Progress>}
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            </div>
+          </>}
+
+        {showProjects && <>
+          <div>
+            <Card>
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8">
+                {/* <img
                 src={Screenshot}
                 alt="Descriptive Alt Text"
                 className="w-full md:w-1/2 lg:w-1/3 rounded-lg shadow-md"
               /> */}
-            <Image alt={'screenshot1'} className={"md:w-1/2 lg:w-1/2 rounded-lg shadow-md"} src={Screenshot1} ></Image>
+                <Image alt={'screenshot1'} className={"md:w-1/2 lg:w-1/2 rounded-lg shadow-md"} src={Screenshot1} ></Image>
 
-            <div className="flex flex-col text-center md:text-left space-y-4">
-              <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
-                Fashion Assitant Application
-              </h1>
-              <p className="text-gray-600 text-sm md:text-base">
-                Tech Stack Used: - NextJS, NextAuth, Three.js, Tensorflow.js, PostgreSql
-              </p>
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button>Checkout the app</Button>
-                </DrawerTrigger>
-                <DrawerContent className={'p-2'}>
-                  <div className="">
-                    <DrawerHeader>
-                      <DrawerTitle>Checkout the Application</DrawerTitle>
-                    </DrawerHeader>
-                    <DrawerClose asChild>
-                      <Button variant='outline'>Close</Button>
-                    </DrawerClose>
-                    <div className="p-4 lg:p-1 pb-0 w-full">
-                      <div className="flex flex-col lg:flex-row items-center justify-center w-full">
-                        <div className="hidden lg:flex flex-col lg:flex-row items-center justify-center w-full">
-                          <div className="sm:w-8/12 m-5 border-solid-200">
-                            <p>
-                              The Fashion Assistant App is your personal style companion! It analyzes your wardrobe to recommend perfect outfit combinations using simple color harmony formulas. By scanning your face, it suggests the best hairstyles and lenses tailored to your features. You can even try hairstyles and lenses in real-time, offering a sneak peek into your transformed look. While the real-time try-on feature is still under development, the app already serves as a powerful tool to elevate your fashion game effortlessly.
-                            </p>
+                <div className="flex flex-col text-center md:text-left space-y-4">
+                  <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
+                    Fashion Assitant Application
+                  </h1>
+                  <p className="text-gray-600 text-sm md:text-base">
+                    Tech Stack Used: - NextJS, NextAuth, Three.js, Tensorflow.js, PostgreSql
+                  </p>
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button>Checkout the app</Button>
+                    </DrawerTrigger>
+                    <DrawerContent className={'p-2'}>
+                      <div className="">
+                        <DrawerHeader>
+                          <DrawerTitle>Checkout the Application</DrawerTitle>
+                        </DrawerHeader>
+                        <DrawerClose asChild>
+                          <Button variant='outline'>Close</Button>
+                        </DrawerClose>
+                        <div className="p-4 lg:p-1 pb-0 w-full">
+                          <div className="flex flex-col lg:flex-row items-center justify-center w-full">
+                            <div className="hidden lg:flex flex-col lg:flex-row items-center justify-center w-full">
+                              <div className="sm:w-8/12 m-5 border-solid-200">
+                                <p>
+                                  The Fashion Assistant App is your personal style companion! It analyzes your wardrobe to recommend perfect outfit combinations using simple color harmony formulas. By scanning your face, it suggests the best hairstyles and lenses tailored to your features. You can even try hairstyles and lenses in real-time, offering a sneak peek into your transformed look. While the real-time try-on feature is still under development, the app already serves as a powerful tool to elevate your fashion game effortlessly.
+                                </p>
+                              </div>
+                              <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
+                                <p><a href="https://ai-stylist-umber.vercel.app/">Link to the product</a></p>
+                              </div>
+                            </div>
+                            <ScrollArea className={'block lg:hidden h-72 rounded-md border'}>
+                              <div className="sm:w-8/12 m-5 border-solid-200">
+                                <p>
+                                  The Fashion Assistant App is your personal style companion! It analyzes your wardrobe to recommend perfect outfit combinations using simple color harmony formulas. By scanning your face, it suggests the best hairstyles and lenses tailored to your features. You can even try hairstyles and lenses in real-time, offering a sneak peek into your transformed look. While the real-time try-on feature is still under development, the app already serves as a powerful tool to elevate your fashion game effortlessly.
+                                </p>
+                              </div>
+                              <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
+                                <p><a href="https://ai-stylist-umber.vercel.app/">Link to the product</a></p>
+                              </div>
+                            </ScrollArea>
                           </div>
-                          <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
-                            <p><a href="https://ai-stylist-umber.vercel.app/">Link to the product</a></p>
-                          </div>
+
                         </div>
-                        <ScrollArea className={'block lg:hidden h-72 rounded-md border'}>
-                          <div className="sm:w-8/12 m-5 border-solid-200">
-                            <p>
-                              The Fashion Assistant App is your personal style companion! It analyzes your wardrobe to recommend perfect outfit combinations using simple color harmony formulas. By scanning your face, it suggests the best hairstyles and lenses tailored to your features. You can even try hairstyles and lenses in real-time, offering a sneak peek into your transformed look. While the real-time try-on feature is still under development, the app already serves as a powerful tool to elevate your fashion game effortlessly.
-                            </p>
-                          </div>
-                          <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
-                            <p><a href="https://ai-stylist-umber.vercel.app/">Link to the product</a></p>
-                          </div>
-                        </ScrollArea>
+                        <DrawerFooter>
+                        </DrawerFooter>
                       </div>
+                    </DrawerContent>
+                  </Drawer>
+                  <Separator></Separator>
+                  <Button>
+                    Github
+                  </Button>
+                </div>
+              </div>
 
-                    </div>
-                    <DrawerFooter>
-                    </DrawerFooter>
-                  </div>
-                </DrawerContent>
-              </Drawer>
-              <Separator></Separator>
-              <Button>
-                Github
-              </Button>
-            </div>
-          </div>
+            </Card>
+            <Card className={'m-3'}>
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8">
 
-        </Card>
-        <Card className={'m-3'}>
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8">
+                <div className="flex flex-col text-center md:text-left space-y-4">
+                  <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
+                    Restaurant CMS System
+                  </h1>
+                  <p className="text-gray-600 text-sm md:text-base">
+                    Tech Stack Used: - Terraform, Ansible, NextJs, MongoDB, Google Cloud
+                  </p>
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button>Checkout the app</Button>
+                    </DrawerTrigger>
+                    <DrawerContent className={'p-2'}>
+                      <div className="">
+                        <DrawerHeader>
+                          <DrawerTitle>Checkout the Application</DrawerTitle>
+                        </DrawerHeader>
+                        <DrawerClose asChild>
+                          <Button variant='outline'>Close</Button>
+                        </DrawerClose>
+                        <div className="p-4 lg:p-1 pb-0 w-full">
+                          <div className="flex flex-col lg:flex-row items-center justify-center w-full">
+                            <div className="hidden lg:flex flex-col lg:flex-row items-center justify-center w-full">
+                              <div className="sm:w-8/12 m-5 border-solid-200">
+                                <p>The Restaurant CMS is a cloud-based management system built with Terraform and hosted on GCP, designed to empower restaurants with their own fully managed websites, including independent frontends and backends. Each site comes with automatic DNS management, streamlining deployment and scalability. Key features include payment integration, social media control (Twitter), and email promotions via SendGrid, all managed through a super admin portal. This solution simplifies operations while providing robust tools to enhance customer engagement and digital presence.
+                                </p>
+                                <p>There are three links to checkout the product super admin port is where you make an additional instance, rest two front end, admin are the portals which show you how an accomplished instance would look like</p>
+                              </div>
+                              <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
+                                {/* <p><a href="https://ai-stylist-umber.vercel.app/">Link to the l</a></p> */}
+                                <Popover>
+                                  <PopoverTrigger>Link to the product</PopoverTrigger>
+                                  <PopoverContent>
+                                    <p><a href="http://superadmin-restaurantcms.jaideepgrover.blog/">Super-Admin Portal</a></p>
+                                    <p><a href="https://admin-res.netlify.app/">Admin End</a></p>
+                                    <p><a href="https://restaurant-capstone-1.netlify.app/">Front End</a></p>
+                                  </PopoverContent>
+                                </Popover>
 
-            <div className="flex flex-col text-center md:text-left space-y-4">
-              <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
-                Restaurant CMS System
-              </h1>
-              <p className="text-gray-600 text-sm md:text-base">
-                Tech Stack Used: - Terraform, Ansible, NextJs, MongoDB, Google Cloud
-              </p>
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button>Checkout the app</Button>
-                </DrawerTrigger>
-                <DrawerContent className={'p-2'}>
-                  <div className="">
-                    <DrawerHeader>
-                      <DrawerTitle>Checkout the Application</DrawerTitle>
-                    </DrawerHeader>
-                    <DrawerClose asChild>
-                      <Button variant='outline'>Close</Button>
-                    </DrawerClose>
-                    <div className="p-4 lg:p-1 pb-0 w-full">
-                      <div className="flex flex-col lg:flex-row items-center justify-center w-full">
-                        <div className="hidden lg:flex flex-col lg:flex-row items-center justify-center w-full">
-                          <div className="sm:w-8/12 m-5 border-solid-200">
-                            <p>The Restaurant CMS is a cloud-based management system built with Terraform and hosted on GCP, designed to empower restaurants with their own fully managed websites, including independent frontends and backends. Each site comes with automatic DNS management, streamlining deployment and scalability. Key features include payment integration, social media control (Twitter), and email promotions via SendGrid, all managed through a super admin portal. This solution simplifies operations while providing robust tools to enhance customer engagement and digital presence.
-                            </p>
-                            <p>There are three links to checkout the product super admin port is where you make an additional instance, rest two front end, admin are the portals which show you how an accomplished instance would look like</p>
+                              </div>
+                            </div>
+                            <ScrollArea className={'block lg:hidden h-72 rounded-md border'}>
+                              <div className="sm:w-8/12 m-5 border-solid-200">
+                                <p>The Restaurant CMS is a cloud-based management system built with Terraform and hosted on GCP, designed to empower restaurants with their own fully managed websites, including independent frontends and backends. Each site comes with automatic DNS management, streamlining deployment and scalability. Key features include payment integration, social media control (Twitter), and email promotions via SendGrid, all managed through a super admin portal. This solution simplifies operations while providing robust tools to enhance customer engagement and digital presence.
+                                </p>
+                                <p>There are three links to checkout the product super admin port is where you make an additional instance, rest two front end, admin are the portals which show you how an accomplished instance would look like</p>
+                              </div>
+                              <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
+                                <Popover>
+                                  <PopoverTrigger>Link to the Product</PopoverTrigger>
+                                  <PopoverContent>
+                                    <p><a href="http://superadmin-restaurantcms.jaideepgrover.blog/">Super-Admin Portal</a></p>
+                                    <p><a href="https://admin-res.netlify.app/">Admin End</a></p>
+                                    <p><a href="https://restaurant-capstone-1.netlify.app/">Front End</a></p>
+                                  </PopoverContent>
+                                </Popover>
+
+                                {/* <p><a href="https://ai-stylist-umber.vercel.app/">Link to the product</a></p> */}
+                              </div>
+                            </ScrollArea>
                           </div>
-                          <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
-                            {/* <p><a href="https://ai-stylist-umber.vercel.app/">Link to the l</a></p> */}
-                            <Popover>
-                              <PopoverTrigger>Link to the product</PopoverTrigger>
-                              <PopoverContent>
-                                <p><a href="http://superadmin-restaurantcms.jaideepgrover.blog/">Super-Admin Portal</a></p>
-                                <p><a href="https://admin-res.netlify.app/">Admin End</a></p>
-                                <p><a href="https://restaurant-capstone-1.netlify.app/">Front End</a></p>
-                              </PopoverContent>
-                            </Popover>
 
-                          </div>
                         </div>
-                        <ScrollArea className={'block lg:hidden h-72 rounded-md border'}>
-                          <div className="sm:w-8/12 m-5 border-solid-200">
-                            <p>The Restaurant CMS is a cloud-based management system built with Terraform and hosted on GCP, designed to empower restaurants with their own fully managed websites, including independent frontends and backends. Each site comes with automatic DNS management, streamlining deployment and scalability. Key features include payment integration, social media control (Twitter), and email promotions via SendGrid, all managed through a super admin portal. This solution simplifies operations while providing robust tools to enhance customer engagement and digital presence.
-                            </p>
-                            <p>There are three links to checkout the product super admin port is where you make an additional instance, rest two front end, admin are the portals which show you how an accomplished instance would look like</p>
-                          </div>
-                          <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
-                            <Popover>
-                              <PopoverTrigger>Link to the Product</PopoverTrigger>
-                              <PopoverContent>
-                                <p><a href="http://superadmin-restaurantcms.jaideepgrover.blog/">Super-Admin Portal</a></p>
-                                <p><a href="https://admin-res.netlify.app/">Admin End</a></p>
-                                <p><a href="https://restaurant-capstone-1.netlify.app/">Front End</a></p>
-                              </PopoverContent>
-                            </Popover>
-
-                            {/* <p><a href="https://ai-stylist-umber.vercel.app/">Link to the product</a></p> */}
-                          </div>
-                        </ScrollArea>
+                        <DrawerFooter>
+                        </DrawerFooter>
                       </div>
+                    </DrawerContent>
+                  </Drawer>
+                  <Separator></Separator>
+                  <Button>
+                    Github
+                  </Button>
+                </div>
 
-                    </div>
-                    <DrawerFooter>
-                    </DrawerFooter>
-                  </div>
-                </DrawerContent>
-              </Drawer>
-              <Separator></Separator>
-              <Button>
-                Github
-              </Button>
-            </div>
+                <Image alt="Screenshot" className={"md:w-1/2 lg:w-1/2 rounded-lg shadow-md"} src={Screenshot2} ></Image>
 
-            <Image alt="Screenshot" className={"md:w-1/2 lg:w-1/2 rounded-lg shadow-md"} src={Screenshot2} ></Image>
+              </div>
 
-          </div>
+            </Card>
+            <Card className={'m-3'}>
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8">
 
-        </Card>
-        <Card className={'m-3'}>
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8">
+                <Image alt={'screenshot3'} className={"md:w-1/2 lg:w-1/2 rounded-lg shadow-md"} src={Screenshot3} ></Image>
 
-            <Image alt={'screenshot3'} className={"md:w-1/2 lg:w-1/2 rounded-lg shadow-md"} src={Screenshot3} ></Image>
+                <div className="flex flex-col text-center md:text-left space-y-4">
+                  <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
+                    HomeCare Compass
+                  </h1>
+                  <p className="text-gray-600 text-sm md:text-base">
+                    Tech Stack Used: - ReactJS, ExpressJS, MongoDB, NodeJS
+                  </p>
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button>Checkout the app</Button>
+                    </DrawerTrigger>
+                    <DrawerContent className={'p-2'}>
+                      <div className="">
+                        <DrawerHeader>
+                          <DrawerTitle>Checkout the Application</DrawerTitle>
+                        </DrawerHeader>
+                        <DrawerClose asChild>
+                          <Button variant='outline'>Close</Button>
+                        </DrawerClose>
+                        <div className="p-4 lg:p-1 pb-0 w-full">
+                          <div className="flex flex-col lg:flex-row items-center justify-center w-full">
+                            <div className="hidden lg:flex flex-col lg:flex-row items-center justify-center w-full">
+                              <div className="sm:w-8/12 m-5 border-solid-200">
+                                <p>The NGO Shelter Website is a community-driven platform built using the MEAN stack, aimed at supporting homeless shelters and those in need. Shelters can easily register themselves, making it simpler for the community to guide homeless individuals to safe spaces. The platform also consolidates essential government resources, offering access to food, healthcare, and support services under one roof. This initiative fosters collaboration and compassion, creating a streamlined system to help those in need more effectively.
+                                </p>
+                              </div>
+                              <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
+                                <p><a href="https://homecarefront.vercel.app/home">Link to the product</a></p>
+                              </div>
+                            </div>
+                            <ScrollArea className={'block lg:hidden h-72 rounded-md border'}>
+                              <div className="sm:w-8/12 m-5 border-solid-200">
+                                <p>
+                                  The NGO Shelter Website is a community-driven platform built using the MEAN stack, aimed at supporting homeless shelters and those in need. Shelters can easily register themselves, making it simpler for the community to guide homeless individuals to safe spaces. The platform also consolidates essential government resources, offering access to food, healthcare, and support services under one roof. This initiative fosters collaboration and compassion, creating a streamlined system to help those in need more effectively.
+                                </p>
 
-            <div className="flex flex-col text-center md:text-left space-y-4">
-              <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
-                HomeCare Compass
-              </h1>
-              <p className="text-gray-600 text-sm md:text-base">
-                Tech Stack Used: - ReactJS, ExpressJS, MongoDB, NodeJS
-              </p>
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button>Checkout the app</Button>
-                </DrawerTrigger>
-                <DrawerContent className={'p-2'}>
-                  <div className="">
-                    <DrawerHeader>
-                      <DrawerTitle>Checkout the Application</DrawerTitle>
-                    </DrawerHeader>
-                    <DrawerClose asChild>
-                      <Button variant='outline'>Close</Button>
-                    </DrawerClose>
-                    <div className="p-4 lg:p-1 pb-0 w-full">
-                      <div className="flex flex-col lg:flex-row items-center justify-center w-full">
-                        <div className="hidden lg:flex flex-col lg:flex-row items-center justify-center w-full">
-                          <div className="sm:w-8/12 m-5 border-solid-200">
-                            <p>The NGO Shelter Website is a community-driven platform built using the MEAN stack, aimed at supporting homeless shelters and those in need. Shelters can easily register themselves, making it simpler for the community to guide homeless individuals to safe spaces. The platform also consolidates essential government resources, offering access to food, healthcare, and support services under one roof. This initiative fosters collaboration and compassion, creating a streamlined system to help those in need more effectively.
-                            </p>
+                              </div>
+                              <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
+                                <p><a href="https://homecarefront.vercel.app/home">Link to the product</a></p>
+                              </div>
+                            </ScrollArea>
                           </div>
-                          <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
-                            <p><a href="https://homecarefront.vercel.app/home">Link to the product</a></p>
-                          </div>
+
                         </div>
-                        <ScrollArea className={'block lg:hidden h-72 rounded-md border'}>
-                          <div className="sm:w-8/12 m-5 border-solid-200">
-                            <p>
-                              The NGO Shelter Website is a community-driven platform built using the MEAN stack, aimed at supporting homeless shelters and those in need. Shelters can easily register themselves, making it simpler for the community to guide homeless individuals to safe spaces. The platform also consolidates essential government resources, offering access to food, healthcare, and support services under one roof. This initiative fosters collaboration and compassion, creating a streamlined system to help those in need more effectively.
-                            </p>
-
-                          </div>
-                          <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
-                            <p><a href="https://homecarefront.vercel.app/home">Link to the product</a></p>
-                          </div>
-                        </ScrollArea>
+                        <DrawerFooter>
+                        </DrawerFooter>
                       </div>
+                    </DrawerContent>
+                  </Drawer>
+                  <Separator></Separator>
+                  <Button>
+                    Github
+                  </Button>
+                </div>
 
-                    </div>
-                    <DrawerFooter>
-                    </DrawerFooter>
-                  </div>
-                </DrawerContent>
-              </Drawer>
-              <Separator></Separator>
-              <Button>
-                Github
-              </Button>
-            </div>
+              </div>
 
-          </div>
-
-        </Card>
-        <Card className={'m-3'}>
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8">
+            </Card>
+            <Card className={'m-3'}>
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-4 md:p-8">
 
 
-            <div className="flex flex-col text-center md:text-left space-y-4">
-              <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
-                E-Commerce Application
-              </h1>
-              <p className="text-gray-600 text-sm md:text-base">
-                Tech Stack Used: - ReactJS, ExpressJS, MongoDB, NodeJS
-              </p>
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button>Checkout the app</Button>
-                </DrawerTrigger>
-                <DrawerContent className={'p-2'}>
-                  <div className="">
-                    <DrawerHeader>
-                      <DrawerTitle>Checkout the Application</DrawerTitle>
-                    </DrawerHeader>
-                    <DrawerClose asChild>
-                      <Button variant='outline'>Close</Button>
-                    </DrawerClose>
-                    <div className="p-4 lg:p-1 pb-0 w-full">
-                      <div className="flex flex-col lg:flex-row items-center justify-center w-full">
-                        <div className="hidden lg:flex flex-col lg:flex-row items-center justify-center w-full">
-                          <div className="sm:w-8/12 m-5 border-solid-200">
-                            <p>The Freelance E-Commerce Website is a streamlined platform designed to simplify online shopping and order fulfillment. With Stripe payment integration, it ensures secure and seamless transactions, while the Shiprocket API manages logistics for efficient and reliable delivery. The website accumulates orders, providing a centralized system for tracking and processing, making it an intuitive and hassle-free solution for both sellers and buyers.
+                <div className="flex flex-col text-center md:text-left space-y-4">
+                  <h1 className="text-2xl md:text-4xl font-bold text-gray-800">
+                    E-Commerce Application
+                  </h1>
+                  <p className="text-gray-600 text-sm md:text-base">
+                    Tech Stack Used: - ReactJS, ExpressJS, MongoDB, NodeJS
+                  </p>
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button>Checkout the app</Button>
+                    </DrawerTrigger>
+                    <DrawerContent className={'p-2'}>
+                      <div className="">
+                        <DrawerHeader>
+                          <DrawerTitle>Checkout the Application</DrawerTitle>
+                        </DrawerHeader>
+                        <DrawerClose asChild>
+                          <Button variant='outline'>Close</Button>
+                        </DrawerClose>
+                        <div className="p-4 lg:p-1 pb-0 w-full">
+                          <div className="flex flex-col lg:flex-row items-center justify-center w-full">
+                            <div className="hidden lg:flex flex-col lg:flex-row items-center justify-center w-full">
+                              <div className="sm:w-8/12 m-5 border-solid-200">
+                                <p>The Freelance E-Commerce Website is a streamlined platform designed to simplify online shopping and order fulfillment. With Stripe payment integration, it ensures secure and seamless transactions, while the Shiprocket API manages logistics for efficient and reliable delivery. The website accumulates orders, providing a centralized system for tracking and processing, making it an intuitive and hassle-free solution for both sellers and buyers.
 
-                            </p>
+                                </p>
+                              </div>
+                              <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
+                                <p><a href="https://cycle-front-phi.vercel.app/">Link to the product</a></p>
+                              </div>
+                            </div>
+                            <ScrollArea className={'block lg:hidden h-72 rounded-md border'}>
+                              <div className="sm:w-8/12 m-5 border-solid-200">
+                                <p>
+                                  The Freelance E-Commerce Website is a streamlined platform designed to simplify online shopping and order fulfillment. With Stripe payment integration, it ensures secure and seamless transactions, while the Shiprocket API manages logistics for efficient and reliable delivery. The website accumulates orders, providing a centralized system for tracking and processing, making it an intuitive and hassle-free solution for both sellers and buyers.
+                                </p>
+
+                              </div>
+                              <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
+                                <p><a href="https://cycle-front-phi.vercel.app/home">Link to the product</a></p>
+                              </div>
+                            </ScrollArea>
                           </div>
-                          <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
-                            <p><a href="https://cycle-front-phi.vercel.app/">Link to the product</a></p>
-                          </div>
+
                         </div>
-                        <ScrollArea className={'block lg:hidden h-72 rounded-md border'}>
-                          <div className="sm:w-8/12 m-5 border-solid-200">
-                            <p>
-                              The Freelance E-Commerce Website is a streamlined platform designed to simplify online shopping and order fulfillment. With Stripe payment integration, it ensures secure and seamless transactions, while the Shiprocket API manages logistics for efficient and reliable delivery. The website accumulates orders, providing a centralized system for tracking and processing, making it an intuitive and hassle-free solution for both sellers and buyers.
-                            </p>
-
-                          </div>
-                          <div className="sm:w-3/12 m-5 p-2 border-2 text-center">
-                            <p><a href="https://cycle-front-phi.vercel.app/home">Link to the product</a></p>
-                          </div>
-                        </ScrollArea>
+                        <DrawerFooter>
+                        </DrawerFooter>
                       </div>
+                    </DrawerContent>
+                  </Drawer>
+                  <Separator></Separator>
+                  <Button>
+                    Github
+                  </Button>
+                </div>
+                <Image alt={'screenshot1'} className={"md:w-1/2 lg:w-1/2 rounded-lg shadow-md"} src={Screenshot4} ></Image>
 
-                    </div>
-                    <DrawerFooter>
-                    </DrawerFooter>
-                  </div>
-                </DrawerContent>
-              </Drawer>
-              <Separator></Separator>
-              <Button>
-                Github
-              </Button>
-            </div>
-            <Image alt={'screenshot1'} className={"md:w-1/2 lg:w-1/2 rounded-lg shadow-md"} src={Screenshot4} ></Image>
+              </div>
 
+            </Card>
           </div>
+        </>}
 
-        </Card>
       </Card>
       <Card>
         <CardHeader>
